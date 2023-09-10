@@ -105,8 +105,10 @@ struct captured_data *getdata(pcre2_code *regex, const char *str)
 	if(rc < 0) {
 		print_error(rc, -1, str);
 	}
-	// printf("No. of capture groups: %d\n", captures);
 
+    if(captures > 99) {
+        printf("Cannot have more than 99 capture groups.\n");
+    }
 	captures++; // Need capture groups + 1 since whole string is matched
 
 	matchdata = pcre2_match_data_create_from_pattern(regex, NULL);
