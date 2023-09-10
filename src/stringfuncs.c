@@ -111,7 +111,7 @@ int get_rename_data(struct captured_data *cat, struct rename_data *rat, char *st
                 return 1;
             } else {
                 rc--;
-                rat->substrings[rc] = strdup(cat->substrings[rc+1]);
+                rat->substrings[rc] = cat->substrings[rc+1];
                 rat->locs[rc] = i;
                 (void)strtol(rat->substrings[rc], &temp, 10);
                 if(temp[0] != '\0' && rat->padding[rc] > 0) {

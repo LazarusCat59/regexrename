@@ -41,9 +41,7 @@ void captured_data_free(struct captured_data *cat)
 *****************************************************************************/
 void rename_data_free(struct rename_data *rat, size_t size)
 {
-    for(int i = 0; i < (int) size; i++) {
-        free(rat->substrings[i]);
-    } free(rat->substrings);
+    free(rat->substrings);
     free(rat->padding);
     free(rat->locs);
 
@@ -109,7 +107,6 @@ int main(int argc, char *argv[])
 
         struct rename_data *rat = rename_data_alloc(cat->size - 1);
 
-        printf("get_rename_data called\n");
         get_rename_data(cat, rat, argv[2]);
 
         // '(\d+)(.*)' '$2 $1' tests/
