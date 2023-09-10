@@ -60,7 +60,8 @@ int check_nums(struct rename_data *rat, char *str, int len)
             if(str[i+2] == '}') {
                 temp[i] = '\0';
                 retval = atoi(temp);
-                rat->padding[retval-1] = str[i+1] - '0';
+                if(isdigit((unsigned char) str[i+1]))
+                    rat->padding[retval-1] = str[i+1] - '0';
                 printf("padding = %d\n", rat->padding[retval]);
             } else {
                 retval = -1;
