@@ -112,6 +112,7 @@ int get_rename_data(struct captured_data *cat, struct rename_data *rat, char *st
             } else {
                 rc--;
                 rat->substrings[rc] = strdup(cat->substrings[rc+1]);
+                rat->locs[rc] = i;
                 (void)strtol(rat->substrings[rc], &temp, 10);
                 if(temp[0] != '\0' && rat->padding[rc] > 0) {
                     printf("Padding not allowed for strings, no padding will be applied.\n");
