@@ -98,7 +98,7 @@ int get_rename_data(struct captured_data *cat, struct rename_data *rat, char *st
     for(i = 0; i < len; i++) {
         if(str[i] == '$') {
             temp = NULL;
-            rc = check_nums(rat, str+i+1, len);
+            rc = check_nums(rat, str+i+1, len-i-1);
             if(rc == -1) {
                 printf("No closing braces or padding value > 9.\n");
                 return 1;
