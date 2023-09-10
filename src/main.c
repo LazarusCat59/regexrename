@@ -39,7 +39,7 @@ void captured_data_free(struct captured_data *cat)
 * Return:           None
 * Error:            None
 *****************************************************************************/
-void rename_data_free(struct rename_data *rat, size_t size)
+void rename_data_free(struct rename_data *rat)
 {
     free(rat->substrings);
     free(rat->padding);
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
         get_rename_data(cat, rat, argv[2]);
 
         // '(\d+)(.*)' '$2 $1' tests/
-        rename_data_free(rat, cat->size - 1);
+        rename_data_free(rat);
         captured_data_free(cat);
 /*
 		char *str = NULL;
