@@ -11,7 +11,7 @@ LDLIBS=-lpcre2-8
 
 all: bin $(TARGET) cleanobj
 
-dev: CFLAGS+=-fsanitize=undefined -g -Wall -Wextra 
+dev: CFLAGS=-Iinclude -fsanitize=undefined -g -Og -Wall -Wextra 
 dev: all
 
 $(TARGET): $(OBJECTS)
