@@ -61,8 +61,7 @@ int check_nums(struct rename_data *rat, char *str, int len)
                 temp[i] = '\0';
                 retval = atoi(temp);
                 if(isdigit((unsigned char) str[i+1]))
-                    rat->padding[retval-1] = str[i+1] - '0';
-                printf("padding = %d\n", rat->padding[retval]);
+                    rat->padding[rat->size] = str[i+1] - '0';
             } else {
                 retval = -1;
             } break;
@@ -110,17 +109,16 @@ int get_rename_data(struct captured_data *cat, struct rename_data *rat, char *st
                 printf("Variable num higher than no. of captures\n");
                 return 1;
             } else {
-                rc--;
-                rat->substrings[rc] = cat->substrings[rc+1];
-                rat->locs[rc] = i;
-                (void)strtol(rat->substrings[rc], &temp, 10);
-                if(temp[0] != '\0' && rat->padding[rc] > 0) {
+                rat->substrings[rat->size] = cat->substrings[rc+1];
+                rat->locs[rat->size] = i;
+                (void)strtol(rat->substrings[rat->size], &temp, 10);
+                if(temp[0] != '\0' && rat->padding[rat->size] > 0) {
                     printf("Padding not allowed for strings, no padding will be applied.\n");
-                    rat->padding[rc] = -1;
-                } else if(temp[0] == '\0' && rat->padding[rc] == -1) {
-                    rat->padding[rc] = 0;
-                }
-                printf("%d: %s, padding: %d\n", rc+1, rat->substrings[rc], rat->padding[rc]);
+                    rat->padding[rat->size] = -1;
+                } else if(temp[0] == '\0' && rat->padding[rat->size] == -1) {
+                    rat->padding[rat->size] = 0;
+                } rat->size++;
+                printf("%d: %s, padding: %d\n", rc+1, rat->substrings[rat->size-1], rat->padding[rat->size-1]);
             }
         }
     }
