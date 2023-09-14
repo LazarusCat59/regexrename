@@ -9,7 +9,7 @@ TARGET=bin/renameutil
 CFLAGS=-Iinclude -O2
 LDLIBS=-lpcre2-8
 
-all: bin $(TARGET) cleanobj
+all: bin $(TARGET)
 
 dev: CFLAGS=-Iinclude -fsanitize=undefined -g -Og -Wall -Wextra 
 dev: all
