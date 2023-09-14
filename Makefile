@@ -20,13 +20,10 @@ $(TARGET): $(OBJECTS)
 bin:
 	mkdir -p bin
 
-.PHONY: tests clean cleanobj
+.PHONY: tests clean
 
 clean:
 	rm -rf bin $(OBJECTS) $(TESTS)
 	rm -f tests/tests.log
 	find . -name "*.gc*" -exec rm {} \;
 	rm -rf `find . -name "*.dSYM" -print`
-
-cleanobj:
-	rm -rf $(OBJECTS)
