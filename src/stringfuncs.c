@@ -108,6 +108,8 @@ int get_rename_data(struct captured_data *cat, struct rename_data *rat, char *st
             } else if(rc >= (int) cat->size) {
                 printf("Variable num higher than no. of captures\n");
                 return 1;
+            } else if (rc == -3) {
+                return 0;
             } else {
                 rat->substrings[rat->size] = cat->substrings[rc+1];
                 rat->locs[rat->size] = i;
