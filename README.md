@@ -7,7 +7,7 @@ A simple utility to rename files following a naming pattern using regex capture.
 
 In rename pattern, \$1 stands for first capture group, \$2 for second capture group and so on. \$0 will stand for the whole text that has been matched. You can use \\\$ if you want to show a literal \$ sign and \\\\ to show a backslash.
 
-### Examples
+### Example
 Imagine you have a set of files which are named using a pattern. For this example we will be using images named using date.
 
 Let's take a few files here, we are assuming it's in an images folder in our working directory:
