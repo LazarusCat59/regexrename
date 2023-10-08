@@ -1,9 +1,9 @@
 # regexrename
 A simple utility to rename files following a naming pattern using regex capture.
 
-### Working
+### Usage
 
-`regexrename <path_to_dir> <regex> <rename_pattern>`
+`regexrename <regex> <rename_pattern> <path_to_dir>`
 
 In rename pattern, `$1` stands for first capture group, `$2` for second capture group and so on. `$0` will stand for the whole text that has been matched. You can use `\$` if you want to show a literal `$` sign and `\\` to show a backslash.
 

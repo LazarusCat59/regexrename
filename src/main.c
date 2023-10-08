@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
 	// We get compiled regex here
 	pcre2_code *regex = getregex(argv[1]);
 	if(regex == NULL) {
+        printf("Regex compilation failed.\n");
 		return 1;
 	}
 
