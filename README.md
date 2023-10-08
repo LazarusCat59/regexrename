@@ -28,4 +28,6 @@ So this will rename our files to the format we need:
 2023-05-25.png
 2022-12-09.png
 
+Of course, this is not the only usecase this software has since the regex can be used to capture text from filenames in a variety of combinations, making it quite a versatile utility.
+
 That's it, thanks!
