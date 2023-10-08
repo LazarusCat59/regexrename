@@ -42,8 +42,8 @@ void captured_data_free(struct captured_data *cat)
 void rename_data_free(struct rename_data *rat)
 {
     free(rat->substrings);
+    free(rat->refstr);
     free(rat->padding);
-    free(rat->locs);
 
     free(rat);
 }
@@ -64,12 +64,15 @@ struct rename_data *rename_data_alloc(size_t size)
     struct rename_data *rat = malloc(sizeof(struct rename_data));
 
     rat->padding = calloc(size, sizeof(int));
-    rat->locs = calloc(size, sizeof(size_t));
 
     rat->substrings = calloc(size, sizeof(char *));
     for(i = 0; i < (int) size; i++) {
         rat->substrings[i] = NULL;
-    }
+        rat->padding[i] = -1;
+    } 
+
+    rat->size = 0;
+    rat->refstr = NULL;
 
     return rat;
 }
