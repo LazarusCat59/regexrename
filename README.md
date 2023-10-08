@@ -20,7 +20,7 @@ If we use normal alphabetic ordering for these files it would not show up in a l
 
 `regexrename` accepts 3 arguments by default, third one being the path to the directory which contains files to be renamed, second one being the regex itself to match and capture data, and first one the pattern to rearrange it to. In the second argument, $1 stands for the first capture group, $2 for the second, and so on. So to rename these files to the pattern we require, we would use:
 
-`regexrename images/ '(\d+)-(\d+)-(\d+)\.(.*)' '$3-$2-$1.$4'`
+`regexrename '(\d+)-(\d+)-(\d+)\.(.*)' '$3-$2-$1.$4' images/`
 
 So this will rename our files to the format we need:
 
