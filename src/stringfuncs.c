@@ -13,8 +13,8 @@
  * Description:      Concatenates 2 paths, adding the seperator '/' if
  *                   necessary
  * Where:
- *                   char path1[] - Beginning of path
- *                   char path2[] - Ending of path
+ *                   char path1[] - First half of path
+ *                   char path2[] - Second half of path
  * Return:           Pointer to concatenated path, has to be freed
  * Error:            Not expectin this to fail rn
  *****************************************************************************/
@@ -31,10 +31,11 @@ char *join_path(char path1[], char path2[])
 }
 
 /******************************************************************************
- * Function:         int check_nums
+ * Function:         int set_rename_data
  * Description:      Gets value after the $ and checks if there is padding
  *                   value after it. If there is, padding value is stored 
- *                   to appropriate location in struct rename_data
+ *                   to appropriate location in struct rename_data and
+ *                   value after $ will be useed to store substring
  * Where:
  *                   struct rename_data *rat - for storing padding data,
  *                       should already be allocated, except for substrings
@@ -43,44 +44,51 @@ char *join_path(char path1[], char path2[])
  * Return:           Integer value after $ if the pattern is valid
  * Error:            Negative values on error
  *****************************************************************************/
-int check_nums(struct rename_data *rat, char *str, int len)
+int set_rename_data(struct captured_data *cat, struct rename_data *rat, char **str)
 {
-    int i, retval = -1;
-    char temp[2];
+    int i = 0, val = -1;
+    char *temp;
 
-    for (i = 0; i < len; i++) {
-        if(i == 2 && isdigit((unsigned char) str[i])) {
-            retval = -2;
-            break;
-        }
+    // printf("str = %s\n", *str);
+    val = (int) strtol(*str, &temp, 10);
 
-        if(isdigit((unsigned char) str[i])) {
-            temp[i] = str[i];
-        } else if (str[i] == '{') {
-            if(str[i+2] == '}') {
-                temp[i] = '\0';
-                retval = atoi(temp);
-                if(isdigit((unsigned char) str[i+1]))
-                    rat->padding[rat->size] = str[i+1] - '0';
-            } else {
-                retval = -1;
-            } break;
+    if(temp[0] == '{' && val > 0) {
+        *str = temp+1;
+        i = (int) strtol(*str, &temp, 10);
+        if(temp[0] != '}') {
+            return -1;
         } else {
-            temp[i] = '\0';
-            retval = atoi(temp);
-            break;
+            rat->padding[rat->size] = i;
+            temp++;
         }
-    } 
+    }
 
-    return retval;
+    if(val > (int) cat->size) {
+        return -2;
+    }
+
+    if(val == 0) {
+        if(*(temp-1) == '0')
+            return -4;
+        else
+            return -3;
+    }
+
+    // Since the loop in set_refstr increments str at start, we need this
+    temp--;
+
+    *str = temp;
+    rat->substrings[rat->size] = cat->substrings[val];
+
+    return 0;
 }
 
 /******************************************************************************
- * Function:         int get_rename_data
- * Description:      Parses the substitute string and stores values to be 
- *                   substituted in struct rename_data, with padding if it's
- *                   an integer value. If it's not an integer value, padding
- *                   will be -1
+ * Function:         int set_refstr
+ * Description:      Parses the substitute string and calls set_rename_data
+ *                   to store values to be substituted in struct
+ *                   rename_data, with padding if it's an integer value.
+ *                   If it's not an integer value, padding will be -1
  * Where:
  *                   struct captured_data *cat - To get substrings to store
  *                       in struct rename_data
