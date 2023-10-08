@@ -90,40 +90,133 @@ int check_nums(struct rename_data *rat, char *str, int len)
  * Return:           0 if there were no errors 
  * Error:            -1 if there was an error
  *****************************************************************************/
-int get_rename_data(struct captured_data *cat, struct rename_data *rat, char *str)
+int set_refstr(struct captured_data *cat, struct rename_data *rat, char *str)
 {
-    int i, rc, len = strlen(str);
-    char *temp;
+    int j = 0, rc;
+    char *temp, refstr[256], *ptr;
 
-    for(i = 0; i < len; i++) {
-        if(str[i] == '$') {
+    if(strlen(str) > 255) {
+        printf("String should not be more than 255 chars\n");
+        return 1;
+    }
+
+    for(ptr = str; *ptr != '\0'; ptr++) {
+        refstr[j++] = *ptr;
+        if(*ptr == '\\') {
+            if(*(ptr+1) == '$') {
+                refstr[j++] = '\\';
+                refstr[j++] = '$';
+            } else if(*(ptr+1) == '\\') {
+                refstr[j++] = '\\';
+                refstr[j++] = '\\';
+            } else {
+                return 1;
+            }
+        }
+
+        if(*ptr == '$') {
             temp = NULL;
-            rc = check_nums(rat, str+i+1, len-i);
+
+            // To start doin shiz at value after $ instead of $
+            ptr++;
+
+            rc = set_rename_data(cat, rat, &ptr);
+            // printf("rc = %d\n", rc);
+
             if(rc == -1) {
-                printf("No closing braces or padding value > 9.\n");
+                printf("No closing braces.\n");
                 return 1;
             } else if(rc == -2) {
-                printf("Cannot have more than 99 capture groups.\n");
-                return 1;
-            } else if(rc >= (int) cat->size) {
                 printf("Variable num higher than no. of captures\n");
                 return 1;
             } else if (rc == -3) {
-                return 0;
+                printf("Unescaped '$' in string\n");
+                return 1;
+            } else if(rc == -4) {
+                printf("Zero given as padding\n");
             } else {
-                rat->substrings[rat->size] = cat->substrings[rc+1];
-                rat->locs[rat->size] = i;
-                (void)strtol(rat->substrings[rat->size], &temp, 10);
+                (void) strtol(rat->substrings[rat->size], &temp, 10);
+
                 if(temp[0] != '\0' && rat->padding[rat->size] > 0) {
-                    printf("Padding not allowed for strings, no padding will be applied.\n");
-                    rat->padding[rat->size] = -1;
-                } else if(temp[0] == '\0' && rat->padding[rat->size] == -1) {
-                    rat->padding[rat->size] = 0;
-                } rat->size++;
-                printf("%d: %s, padding: %d\n", rc+1, rat->substrings[rat->size-1], rat->padding[rat->size-1]);
+                    printf("Padding not allowed for strings.\n");
+                    return 1;
+                }
+
+                // printf("$%d = %s\n", (int) rat->size+1, rat->substrings[rat->size]);
+                rat->size++;
             }
+        }
+    } refstr[j] = '\0';
+
+    rat->refstr = strndup(refstr, 256);
+
+    return 0;
+}
+
+/******************************************************************************
+ * Function:         char *construct_string
+ * Description:      Constructs a string to replace the current name of files
+ *                   files or folders, according to string provided
+ * Where:
+ *                   struct rename_data *rat - has data needed to construct
+ *                   string
+ * Return:           String to use for renaming
+ * Error:            NULL
+ *****************************************************************************/
+char *construct_string(struct rename_data *rat)
+{
+    int i, j = 0, k = 0, l = 0, len = strlen(rat->refstr), templen;
+    char *new_str = calloc(256, sizeof(char));
+    char *temp = NULL;
+
+    for (i = 0; i < len; ++i) {
+        if(k >= 255) {
+            free(new_str);
+            return NULL;
+        }
+
+        temp = NULL;
+
+        // handle \$ and escaped backslash
+        if(rat->refstr[i] == '\\') {
+            if(rat->refstr[i+1] == '\\') {
+                new_str[k++] = '\\';
+            } else if(rat->refstr[i+1] == '$') {
+                new_str[k++] = '$';
+            } i++; continue;
+        }
+
+        // Inputting word or padded digits
+        else if(rat->refstr[i] == '$') {
+            if(rat->padding[j] < 0) {
+                templen = strlen(rat->substrings[j]);
+                if((k + templen) < 256) {
+                    for(l = 0; l < templen; l++) {
+                        new_str[k++] = rat->substrings[j][l];
+                    } j++;
+                } else {
+                    free(new_str);
+                    return NULL;
+                }
+            } else {
+                asprintf(&temp, "%%0%dd", rat->padding[j]);
+                asprintf(&temp, temp, strtol(rat->substrings[j++], NULL, 10));
+
+                templen = strlen(temp);
+                if((k + templen) < 256) {
+                    for(l = 0; l < templen; l++) {
+                        new_str[k++] = temp[l];
+                    }
+                } else {
+                    free(new_str);
+                    free(temp);
+                    return NULL;
+                }
+            }
+        } else {
+            new_str[k++] = rat->refstr[i];
         }
     }
 
-    return 0;
+    return new_str;
 }
