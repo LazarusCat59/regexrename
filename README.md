@@ -10,7 +10,7 @@ In rename pattern, `$1` stands for first capture group, `$2` for second capture 
 ### Example
 Imagine you have a set of files which are named using a pattern. For this example we will be using images named using date.
 
-Let's take a few files here, we are assuming it's in an images folder in our working directory:
+Let's take a few files here, we are assuming it's in a directory named images in our working directory:
 
 12-06-2023.png
 09-12-2022.png
