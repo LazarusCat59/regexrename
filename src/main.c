@@ -79,6 +79,7 @@ struct rename_data *rename_data_alloc(size_t size)
 
 int main(int argc, char *argv[])
 {
+    int rc;
 	DIR *workdir;
 	struct dirent *direntry;
 
@@ -110,9 +111,24 @@ int main(int argc, char *argv[])
 
         struct rename_data *rat = rename_data_alloc(cat->size - 1);
 
-        get_rename_data(cat, rat, argv[2]);
+        rc = set_refstr(cat, rat, argv[2]);
 
-        // '(\d+)(.*)' '$2 $1' tests/
+        if(rc) {
+            rename_data_free(rat);
+            captured_data_free(cat);
+            continue;
+        }
+
+        // '(\d+) (.*)' '$2 $1' tests/
+
+        if(rat->size > 0) {
+            char *new_name = construct_string(rat);
+            if(new_name)
+                printf("New string: %s|\n", new_name);
+
+            free(new_name);
+        }
+
         rename_data_free(rat);
         captured_data_free(cat);
 /*
