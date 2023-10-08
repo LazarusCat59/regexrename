@@ -18,7 +18,7 @@ Let's take a few files here, we are assuming it's in an images folder in our wor
 
 If we use normal alphabetic ordering for these files it would not show up in a latest-date-first manner. To solve this, we would have to change the ordering a bit and make it into YYYY-MM-DD styled ordering.
 
-`regexrename` accepts 3 arguments by default, first one being the path to the directory which contains files to be renamed, second one being the regex itself to match and capture data, and third then pattern to rearrange it to. In the second argument, $1 stands for the first capture group, $2 for the second, and so on. So to rename these files to the pattern we require, we would use:
+`regexrename` accepts 3 arguments by default, third one being the path to the directory which contains files to be renamed, second one being the regex itself to match and capture data, and first one the pattern to rearrange it to. In the second argument, $1 stands for the first capture group, $2 for the second, and so on. So to rename these files to the pattern we require, we would use:
 
 `regexrename images/ '(\d+)-(\d+)-(\d+)\.(.*)' '$3-$2-$1.$4'`
 

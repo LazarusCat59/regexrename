@@ -120,7 +120,6 @@ int main(int argc, char *argv[])
         }
 
         // '(\d+) (.*)' '$2 $1' tests/
-
         if(rat->size > 0) {
             char *new_name = construct_string(rat);
             if(new_name)
