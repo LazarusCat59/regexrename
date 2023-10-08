@@ -4,7 +4,7 @@ OBJECTS=$(patsubst %.c, %.o, $(SOURCES))
 TEST_SRC=$(wildcard tests/*.c)
 TESTS=$(patsubst %.c, %, $(TEST_SRC))
 
-TARGET=bin/renameutil
+TARGET=bin/regexrename
 
 CFLAGS=-Iinclude -O2
 LDLIBS=-lpcre2-8
