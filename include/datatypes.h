@@ -21,9 +21,9 @@ struct captured_data
  * string (substrings) */
 struct rename_data
 {
-    size_t size, *locs;
+    size_t size;
     int *padding;
-    char **substrings;
+    char **substrings, *refstr;
 };
 
 #endif
